@@ -56,9 +56,6 @@ Repräsentiert ein JSON-Objekt mit Key/Value-Paaren.
 - `function GetValue(Key: string): TJSONValue`  
   Zugriff auf den JSON-Wert eines Keys.
 
-- `function GetValueOf(Key: string): string`  
-  Direkter Zugriff auf den String-Wert.
-
 - `function Contains(Key: string): Boolean`  
   Prüft, ob ein Key existiert.
 
