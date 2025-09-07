@@ -14,6 +14,8 @@ type
   TJSONArray  = class;
 
   TJSONValue = class
+  private
+    procedure ResetValues;
   public
     ValueType : TJSONValueType;
     AsString  : string;
@@ -21,7 +23,7 @@ type
     AsBoolean : Boolean;
     AsObject  : TJSONObject;
     AsArray   : TJSONArray;
-    AsDateTime: TDateTime; 
+    AsDateTime: TDateTime;
 
     constructor CreateString(const S: string);
     constructor CreateNumber(const N: Extended);
@@ -29,7 +31,7 @@ type
     constructor CreateNull;
     constructor CreateObject(Obj: TJSONObject);
     constructor CreateArray(Arr: TJSONArray);
-    constructor CreateDateTime(const DT: TDateTime); 
+    constructor CreateDateTime(const DT: TDateTime);
     destructor Destroy; override;
 
     function ToString: string; reintroduce; virtual;
@@ -536,49 +538,86 @@ end;
 constructor TJSONValue.CreateDateTime(const DT: TDateTime);
 begin
   inherited Create;
-  ValueType := jvtDateTime;
-  AsDateTime := DT;
+  ValueType   := jvtDateTime;
+  ResetValues;
+  AsDateTime  := DT;
+  AsNumber    := DT;
+  AsString    := DateTimeToStr(DT);
+  AsBoolean   := DT > 0;
 end;
 
 constructor TJSONValue.CreateString(const S: string);
 begin
   inherited Create;
-  ValueType := jvtString;
-  AsString  := S;
+  ValueType   := jvtString;
+  ResetValues;
+  AsString    := S;
+  AsNumber    := StrToFloatDef(S,0);
+  AsDateTime  := AsNumber;
+  AsBoolean   := AsNumber > 0;
 end;
 
 constructor TJSONValue.CreateNumber(const N: Extended);
 begin
   inherited Create;
-  ValueType := jvtNumber;
-  AsNumber  := N;
+  ValueType   := jvtNumber;
+  ResetValues;
+  AsNumber    := N;
+  AsString    := FloatToStr(N);
+  AsBoolean   := N > 0;
+  AsDateTime  := N;
 end;
 
 constructor TJSONValue.CreateBoolean(const B: Boolean);
 begin
   inherited Create;
-  ValueType := jvtBoolean;
-  AsBoolean := B;
+  ValueType   := jvtBoolean;
+  ResetValues;
+  AsBoolean   := B;
+  AsNumber    := Ord(B);
+  if B then
+    AsString := 'true'
+  else
+    AsString := 'false';
 end;
 
 constructor TJSONValue.CreateNull;
 begin
   inherited Create;
-  ValueType := jvtNull;
+  ValueType   := jvtNull;
+  ResetValues;
+  AsString    := 'null';
 end;
 
 constructor TJSONValue.CreateObject(Obj: TJSONObject);
 begin
   inherited Create;
   ValueType := jvtObject;
+  ResetValues;
   AsObject  := Obj;
+  AsBoolean := Obj <> nil;
 end;
 
 constructor TJSONValue.CreateArray(Arr: TJSONArray);
 begin
   inherited Create;
+  ResetValues;
   ValueType := jvtArray;
   AsArray   := Arr;
+  if (Arr <> nil) then
+    AsBoolean := (Arr.Count > 0)
+  else
+    AsBoolean := False;
+end;
+
+procedure TJSONValue.ResetValues;
+begin
+  AsString   := '';
+  AsNumber   := 0;
+  AsBoolean  := False;
+  AsDateTime := 0;
+  AsObject   := nil;
+  AsArray    := nil;
 end;
 
 destructor TJSONValue.Destroy;
