@@ -21,7 +21,7 @@ Entwickelt primär für **ältere Delphi-Versionen**, die noch keine eingebaute 
 - Konvertierung zwischen `TDateTime` und ISO8601
 - Direkte `ToString`-Methoden für alle Typen → Ausgabe als gültiges JSON
 - Kompatibel auch mit alten Delphi-Versionen (Delphi 7+)
-- Benötigt akteull **Indy 10** (`IdGlobalProtocols`) für Datum/Zeit-Konvertierungen
+- Benötigt aktuell **Indy 10** (`IdGlobalProtocols`) für Datum/Zeit-Konvertierungen
 
 ---
 
